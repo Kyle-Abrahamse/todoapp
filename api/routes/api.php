@@ -10,12 +10,12 @@ Route::get("/test", function () {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
 
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::apiResource("/todos", TodoController::class);
 
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'user']);
+});
 
-Route::get("/todo", [TodoController::class, "index"]);
-Route::post("/todo", [TodoController::class, "store"]);
-Route::patch("/todo/{id}", [TodoController::class, "update"]);
-Route::delete("/todo/{id}", [TodoController::class, "destroy"]);
+Route::apiResource("/todos", TodoController::class);
